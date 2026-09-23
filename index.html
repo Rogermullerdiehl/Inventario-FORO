@@ -440,7 +440,8 @@
     if (!ok) return;
     try {
       await apiPost({ action: "deleteItem", id: id, conferidoPor: lastConferidoPor });
-      await refreshAll();
+      items = items.filter((x) => x.id !== id);
+      renderGrid();
       toast("Item excluído.");
     } catch (e) { toast("Não foi possível excluir."); }
   }
@@ -553,12 +554,15 @@
       const payload = { local, descricao, codigo, fotoUrl, estado, responsavel, dataConferencia, conferidoPor };
       if (editingId) {
         await apiPost(Object.assign({ action: "updateItem", id: editingId }, payload));
+        const idx = items.findIndex((x) => x.id === editingId);
+        if (idx > -1) items[idx] = Object.assign({}, items[idx], payload);
         toast("Item atualizado.");
       } else {
-        await apiPost(Object.assign({ action: "addItem" }, payload));
+        const res = await apiPost(Object.assign({ action: "addItem" }, payload));
+        items.unshift(Object.assign({ id: res.id, criadoEm: Date.now() }, payload));
         toast("Item cadastrado.");
       }
-      await refreshAll();
+      renderGrid();
       closeItemModal();
     } catch (e) {
       toast("Não foi possível salvar. Tente novamente.");
