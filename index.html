@@ -210,9 +210,11 @@
   "use strict";
 
   // ======================================================================
-  // COLE AQUI a URL do seu Apps Script (termina em /exec).
+  // URL do Apps Script (termina em /exec). Os dados são buscados com
+  // ?action=data, porque a mesma URL também serve a página do inventário.
   // ======================================================================
   const API_URL = "https://script.google.com/macros/s/AKfycbyBfxoWnvzPC94e6-xLuxkUnS6EKY5D8qlYSk-c232YDCd6BoCZuAJmLcguM64WcXPn/exec";
+  const DATA_URL = API_URL + "?action=data";
 
   let items = [];
   let locais = [];
@@ -243,7 +245,7 @@
   // ---------- API helpers ----------
   // Content-Type "text/plain" evita o preflight OPTIONS, que o Apps Script não trata.
   async function apiGet() {
-    const res = await fetch(API_URL, { method: "GET" });
+    const res = await fetch(DATA_URL, { method: "GET" });
     return res.json();
   }
   async function apiPost(body) {
